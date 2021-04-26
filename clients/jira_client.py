@@ -32,7 +32,7 @@ def get_all_sprints(team):
     sprint_id = TEAM_CONSTANTS[team]["start_sprint_id"]
     sprint_start_date = TEAM_CONSTANTS[team]["sprint_start_date"]
     sprint_end_date = sprint_start_date + datetime.timedelta(
-        days=SPRINT_LENGTH - 1
+        days=SPRINT_LENGTH
     )
     while sprint_end_date <= END_DATE:
         sprints.append(
@@ -40,14 +40,14 @@ def get_all_sprints(team):
                 "id": TEAM_CONSTANTS[team]["sprint_name"].format(
                     sprint_id=sprint_id
                 ),
-                "start_date": sprint_start_date,
+                "start_date": sprint_start_date + datetime.timedelta(-1),
                 "end_date": sprint_end_date,
             }
         )
         sprint_id += 1
-        sprint_start_date = sprint_end_date + datetime.timedelta(days=1)
+        sprint_start_date = sprint_end_date
         sprint_end_date = sprint_start_date + datetime.timedelta(
-            days=SPRINT_LENGTH - 1
+            days=SPRINT_LENGTH
         )
         # if sprint_end_date > END_DATE:
         #     sprint_end_date = END_DATE
