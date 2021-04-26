@@ -121,6 +121,8 @@ def get_kpis_from_jira(team: str, capacities: Dict = None):
         estimated_sps = 0
         est_deviations = 0
         number_of_estimated_issues = 0
+        over_estimated = 0
+        under_estimated = 0
         query = TEAM_CONSTANTS[team]["sprint_query"].format(
             sprint_id=sprint["id"],
             start_date=sprint["start_date"],
@@ -137,22 +139,32 @@ def get_kpis_from_jira(team: str, capacities: Dict = None):
             est = i.raw["fields"][POST_SPRINT_ESTIMATE_FIELD_NAME]
             if sp:
                 done_sps += sp
-                if est:
-                    number_of_estimated_issues += 1
-                    est_deviations += abs(est - sp)
-                    estimated_sps += est
-            else:
-                logger.info(f"No story points estimated for {i.key}")
+                if not est:
+                    print(f"No story points estimated for {i.key}, original estimate is {sp}")
+                est= est if est else sp
+                number_of_estimated_issues += 1
+                est_deviations += abs(est - sp)
+                if est > sp:
+                    under_estimated += est - sp
+                elif sp > est:
+                    over_estimated += sp - est
+                estimated_sps += est
+                print(f"======== pre estimated = {sp}, post estimated = {est}, issue = {i.key} =======")
+                print(f"======== estimated_sps = {estimated_sps} =======")
+                print(f"======== under_estimated = {under_estimated}, over_estimated = {over_estimated} =======")
+                
         sprint_stats[sprint["end_date"].strftime("%b %d")] = {
             "Capacity": capacities[sprint["id"]] if capacities else 0,
             "Done SPs": done_sps,
+            "Over estimations": over_estimated,
+            "Under estimations": under_estimated,
             "Estimated SPs": estimated_sps,
-            "Velocity": done_sps / capacities[sprint["id"]]
+            "Velocity": estimated_sps / capacities[sprint["id"]]
             if capacities
-            else done_sps,
+            else estimated_sps,
             "Estimation Accuracy": 1
-            - (est_deviations / number_of_estimated_issues)
-            if number_of_estimated_issues
+            - (est_deviations / estimated_sps)
+            if estimated_sps
             else 0,
         }
     return sprint_stats
