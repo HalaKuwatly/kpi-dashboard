@@ -1,10 +1,10 @@
 from notion.client import NotionClient
+import streamlit as st
 from requests.exceptions import HTTPError
 
 from constants import (
     NOTION_COLLECTION,
     NOTION_URL_BASE,
-    NOTION_TOKEN,
     NOTION_VIEW,
 )
 
@@ -18,7 +18,7 @@ def get_client():
 
     if "client" not in NOTION_CLIENT:
         try:
-            NOTION_CLIENT["client"] = NotionClient(token_v2=NOTION_TOKEN)
+            NOTION_CLIENT["client"] = NotionClient(token_v2=st.secrets["notion_token"])
         except HTTPError as error:
             if error.response.status_code == 401:
                 NOTION_CLIENT["error"] = "Bad Notion TOKEN_V2."

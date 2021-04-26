@@ -1,6 +1,6 @@
 import datetime
 from typing import Dict
-
+import streamlit as st
 from jira import JIRA
 
 from log import logger
@@ -10,14 +10,13 @@ from constants import (
     SPRINT_LENGTH,
     END_DATE,
     JIRA_SERVER,
-    JIRA_TOKEN,
     JIRA_USERNAME,
     TEAM_CONSTANTS,
 )
 
 options = {"server": JIRA_SERVER}
 logger.info("connecting to JIRA")
-jira = JIRA(options, basic_auth=(JIRA_USERNAME, JIRA_TOKEN))
+jira = JIRA(options, basic_auth=(JIRA_USERNAME,st.secrets["jira_token"] ))
 
 
 def parse_date(s: str):
