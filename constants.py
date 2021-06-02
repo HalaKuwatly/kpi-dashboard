@@ -18,12 +18,12 @@ NOTION_VIEW = "adabccb5cde7410dad8df3140a8bf93d"
 
 TEAM_CONSTANTS = {
     "nlu": {
-        "sprint_query": "((project in ('NLU Research') AND sprint in ('{sprint_id}')) OR ((project in ('NLU Research') AND 'Epic Link' in (ML-1237, ML-1220, ML-1222)) OR project in ('NLU Application'))) AND status changed to 'Done' after '{start_date}' before '{end_date}'",
-        "status_change_query": "((project in ('NLU Research') AND status changed to ('In Progress', 'Review', 'QA') after '{start_date}' before '{end_date}') OR ((project in ('NLU Research') AND 'Epic Link' in (ML-1237, ML-1220, ML-1222, ML-1500)) OR project in ('NLU Application'))) AND status changed to ('In Progress', 'Review', 'QA') after '{start_date}' before '{end_date}'",
+        "sprint_query": "project in ('NLU Application', 'ML') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task)",
+        "status_change_query": "project in ('NLU Application', 'ML') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task)",
         "statuses": ["In Progress", "Review", "QA"],
-        "start_date": datetime.date(2021, 1, 18),
-        "start_sprint_id": 49,
-        "sprint_start_date": datetime.date(2021, 1, 18),
+        "start_date": datetime.date(2021, 2, 28),
+        "start_sprint_id": 52,
+        "sprint_start_date": datetime.date(2021, 2, 28),
         "sprint_name": "Sprint {sprint_id}",
     },
     "ce": {
