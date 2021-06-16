@@ -16,7 +16,7 @@ from constants import (
 
 options = {"server": JIRA_SERVER}
 logger.info("connecting to JIRA")
-jira = JIRA(options, basic_auth=(JIRA_USERNAME,st.secrets["jira_token"] ))
+jira = JIRA(options, basic_auth=(JIRA_USERNAME, st.secrets["jira_token"]))
 
 
 def parse_date(s: str):
@@ -140,8 +140,10 @@ def get_kpis_from_jira(team: str, capacities: Dict = None):
             if sp:
                 done_sps += sp
                 if not est:
-                    print(f"No story points estimated for {i.key}, original estimate is {sp}")
-                est= est if est else sp
+                    print(
+                        f"No story points estimated for {i.key}, original estimate is {sp}"
+                    )
+                est = est if est else sp
                 number_of_estimated_issues += 1
                 est_deviations += abs(est - sp)
                 if est > sp:
@@ -149,10 +151,14 @@ def get_kpis_from_jira(team: str, capacities: Dict = None):
                 elif sp > est:
                     over_estimated += sp - est
                 estimated_sps += est
-                print(f"======== pre estimated = {sp}, post estimated = {est}, issue = {i.key} =======")
+                print(
+                    f"======== pre estimated = {sp}, post estimated = {est}, issue = {i.key} ======="
+                )
                 print(f"======== estimated_sps = {estimated_sps} =======")
-                print(f"======== under_estimated = {under_estimated}, over_estimated = {over_estimated} =======")
-                
+                print(
+                    f"======== under_estimated = {under_estimated}, over_estimated = {over_estimated} ======="
+                )
+
         sprint_stats[sprint["end_date"].strftime("%b %d")] = {
             "Capacity": capacities[sprint["id"]] if capacities else 0,
             "Done SPs": done_sps,
@@ -162,8 +168,7 @@ def get_kpis_from_jira(team: str, capacities: Dict = None):
             "Velocity": estimated_sps / capacities[sprint["id"]]
             if capacities
             else estimated_sps,
-            "Estimation Accuracy": 1
-            - (est_deviations / estimated_sps)
+            "Estimation Accuracy": done_sps / estimated_sps
             if estimated_sps
             else 0,
         }
