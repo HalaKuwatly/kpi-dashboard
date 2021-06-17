@@ -6,6 +6,7 @@ from constants import (
     NOTION_COLLECTION,
     NOTION_URL_BASE,
     NOTION_VIEW,
+    TEAM_CONSTANTS,
 )
 
 from log import logger
@@ -18,7 +19,9 @@ def get_client():
 
     if "client" not in NOTION_CLIENT:
         try:
-            NOTION_CLIENT["client"] = NotionClient(token_v2=st.secrets["notion_token"])
+            NOTION_CLIENT["client"] = NotionClient(
+                token_v2=st.secrets["notion_token"]
+            )
         except HTTPError as error:
             if error.response.status_code == 401:
                 NOTION_CLIENT["error"] = "Bad Notion TOKEN_V2."
@@ -32,18 +35,10 @@ def get_client():
     return NOTION_CLIENT["client"]
 
 
-def get_capacity():
+def get_capacity(team):
     get_client()
-    wds = [
-        "wds_ivan",
-        "wds_buddhi",
-        "wds_hala",
-        "wds_sumit",
-        "wds_hai",
-        "wds_manuel",
-        "wds_till",
-        "wds_jinay",
-    ]
+    wds = []
+    wds = [f"wds_{member}" for member in TEAM_CONSTANTS[team]["members"]]
     sprint_id_prop = "sprint_number"
     state_prop = "status"
     try:
@@ -75,6 +70,6 @@ def get_capacity():
         for prop in wds:
             value = row.get_property(prop)
             capacity += int(value) * 2
-        capacities["Sprint {sprint_id}".format(sprint_id=sprint_id)] = capacity
-
+        capacities[int(sprint_id)] = capacity
+    print(capacities)
     return capacities

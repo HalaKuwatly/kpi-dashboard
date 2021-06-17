@@ -37,9 +37,7 @@ def get_all_sprints(team):
     while sprint_end_date <= END_DATE:
         sprints.append(
             {
-                "id": TEAM_CONSTANTS[team]["sprint_name"].format(
-                    sprint_id=sprint_id
-                ),
+                "id": sprint_id,
                 "start_date": sprint_start_date + datetime.timedelta(-1),
                 "end_date": sprint_end_date,
             }
@@ -66,7 +64,7 @@ def get_time_in_status(team: str, interval=7):
         end_date = start_date + datetime.timedelta(days=interval)
     for interval in date_intervals:
         time_in_statuses_per_interval[interval[1]] = {s: [] for s in statuses}
-        query = TEAM_CONSTANTS[team]["status_change_query"].format(
+        query = TEAM_CONSTANTS[team]["sprint_query"].format(
             start_date=interval[0],
             end_date=interval[1],
         )
@@ -111,6 +109,54 @@ def get_time_in_status(team: str, interval=7):
     return time_in_statuses_per_interval
 
 
+def get_cycle_time_percentage(team: str, interval=7, acceptable_cycle_time=5):
+    date_intervals = []
+    start_date = TEAM_CONSTANTS[team]["sprint_start_date"]
+    end_date = start_date + datetime.timedelta(days=interval)
+    while end_date <= END_DATE:
+        date_intervals.append((start_date, end_date))
+        start_date = end_date
+        end_date = start_date + datetime.timedelta(days=interval)
+    percentiles = []
+    for interval in date_intervals:
+        query = TEAM_CONSTANTS[team]["sprint_query"].format(
+            start_date=interval[0],
+            end_date=interval[1],
+        )
+        issues = jira.search_issues(
+            query,
+            maxResults=200,
+            expand="changelog",
+            fields="summary",
+        )
+        cycle_times = []
+        for i in issues:
+            issue_start_date = None
+            issue_end_date = None
+            for history in i.changelog.histories:
+                for item in history.items:
+                    if item.field != "status":
+                        continue
+                    if item.toString == "Done":
+                        issue_end_date = parse_date(history.created)
+                    elif (
+                        item.fromString in TEAM_CONSTANTS[team]["to_do_status"]
+                        and item.toString == "In Progress"
+                    ):
+                        issue_start_date = parse_date(history.created)
+                        if issue_end_date:
+                            time_spent = (
+                                issue_end_date - issue_start_date
+                            ).days
+                            cycle_times.append(time_spent)
+
+        percentiles.append(
+            sum([1 for t in cycle_times if t < acceptable_cycle_time])
+            / len(cycle_times)
+        )
+    return percentiles, [s.strftime("%b %d") for _, s in date_intervals]
+
+
 def get_kpis_from_jira(team: str, capacities: Dict = None):
     sprints = get_all_sprints(team)
     logger.info(f"Sprints : {sprints}")
@@ -123,6 +169,7 @@ def get_kpis_from_jira(team: str, capacities: Dict = None):
         number_of_estimated_issues = 0
         over_estimated = 0
         under_estimated = 0
+        correctly_estimated = 0
         query = TEAM_CONSTANTS[team]["sprint_query"].format(
             sprint_id=sprint["id"],
             start_date=sprint["start_date"],
@@ -150,25 +197,31 @@ def get_kpis_from_jira(team: str, capacities: Dict = None):
                     under_estimated += est - sp
                 elif sp > est:
                     over_estimated += sp - est
+                else:
+                    correctly_estimated += sp
                 estimated_sps += est
-                print(
-                    f"======== pre estimated = {sp}, post estimated = {est}, issue = {i.key} ======="
-                )
-                print(f"======== estimated_sps = {estimated_sps} =======")
-                print(
-                    f"======== under_estimated = {under_estimated}, over_estimated = {over_estimated} ======="
-                )
+        #         print(
+        #             f"======== pre estimated = {sp}, post estimated = {est}, issue = {i.key} ======="
+        #         )
+        #         print(f"======== estimated_sps = {estimated_sps} =======")
+        #         print(
+        #             f"======== under_estimated = {under_estimated}, over_estimated = {over_estimated} ======="
+        #         )
+        # print(
+        #     f"======== est_deviations = {est_deviations}, estimated_sps = {done_sps} ======="
+        # )
 
         sprint_stats[sprint["end_date"].strftime("%b %d")] = {
             "Capacity": capacities[sprint["id"]] if capacities else 0,
             "Done SPs": done_sps,
             "Over estimations": over_estimated,
             "Under estimations": under_estimated,
+            "Correct estimations": correctly_estimated,
             "Estimated SPs": estimated_sps,
             "Velocity": estimated_sps / capacities[sprint["id"]]
             if capacities
             else estimated_sps,
-            "Estimation Accuracy": done_sps / estimated_sps
+            "Estimation Error": est_deviations / done_sps
             if estimated_sps
             else 0,
         }
