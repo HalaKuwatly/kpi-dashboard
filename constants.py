@@ -18,7 +18,7 @@ NOTION_VIEW = "adabccb5cde7410dad8df3140a8bf93d"
 
 TEAM_CONSTANTS = {
     "nlu": {
-        "sprint_query": "project in ('NLU Application', 'ML') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task)",
+        "sprint_query": "project in ('NLU Application', 'ML') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task, Research)",
         "sprint_start_date": datetime.date(2021, 3, 29),
         "start_sprint_id": 54,
         "members": [
@@ -30,6 +30,7 @@ TEAM_CONSTANTS = {
             "manuel",
             "till",
             "jinay",
+            "paul",
         ],
         "to_do_status": ["To Do", "Selected for Development"],
     },
@@ -37,11 +38,11 @@ TEAM_CONSTANTS = {
         "sprint_query": "project in ('NLU Application') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task)",
         "sprint_start_date": datetime.date(2021, 3, 29),
         "start_sprint_id": 54,
-        "members": ["ivan", "hai", "till", "jinay"],
+        "members": ["ivan", "hai", "till", "jinay", "paul"],
         "to_do_status": ["Selected for Development"],
     },
     "research": {
-        "sprint_query": "project in ('ML') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task)",
+        "sprint_query": "project in ('ML') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task, Research)",
         "sprint_start_date": datetime.date(2021, 3, 29),
         "start_sprint_id": 54,
         "members": [

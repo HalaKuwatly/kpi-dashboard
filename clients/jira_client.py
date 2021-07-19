@@ -2,6 +2,7 @@ import datetime
 from typing import Dict
 import streamlit as st
 from jira import JIRA
+import numpy as np
 
 from log import logger
 from constants import (
@@ -145,15 +146,16 @@ def get_cycle_time_percentage(team: str, interval=7, acceptable_cycle_time=5):
                     ):
                         issue_start_date = parse_date(history.created)
                         if issue_end_date:
-                            time_spent = (
-                                issue_end_date - issue_start_date
-                            ).days
+                            time_spent = np.busday_count(
+                                issue_start_date.date(), issue_end_date.date()
+                            )
                             cycle_times.append(time_spent)
 
         percentiles.append(
-            sum([1 for t in cycle_times if t < acceptable_cycle_time])
+            sum([1 for t in cycle_times if t <= acceptable_cycle_time])
             / len(cycle_times)
         )
+    print(percentiles)
     return percentiles, [s.strftime("%b %d") for _, s in date_intervals]
 
 

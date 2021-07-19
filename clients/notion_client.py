@@ -69,7 +69,7 @@ def get_capacity(team):
         capacity = 0
         for prop in wds:
             value = row.get_property(prop)
-            capacity += int(value) * 2
+            capacity += int(value) * 2 if value else 0
         capacities[int(sprint_id)] = capacity
     print(capacities)
     return capacities
