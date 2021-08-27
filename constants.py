@@ -1,6 +1,6 @@
 import datetime
 
-END_DATE = datetime.date.today()
+END_DATE = datetime.date.today() + datetime.timedelta(1)
 
 SPRINT_LENGTH = 14
 
@@ -28,7 +28,6 @@ TEAM_CONSTANTS = {
             "sumit",
             "hai",
             "manuel",
-            "till",
             "jinay",
             "paul",
         ],
@@ -38,7 +37,7 @@ TEAM_CONSTANTS = {
         "sprint_query": "project in ('NLU Application') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task)",
         "sprint_start_date": datetime.date(2021, 3, 29),
         "start_sprint_id": 54,
-        "members": ["ivan", "hai", "till", "jinay", "paul"],
+        "members": ["ivan", "hai", "jinay", "paul"],
         "to_do_status": ["Selected for Development"],
     },
     "research": {

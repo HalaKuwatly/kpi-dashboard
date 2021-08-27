@@ -40,7 +40,7 @@ def get_all_sprints(team):
             {
                 "id": sprint_id,
                 "start_date": sprint_start_date + datetime.timedelta(-1),
-                "end_date": sprint_end_date,
+                "end_date": sprint_end_date+ datetime.timedelta(1),
             }
         )
         sprint_id += 1

@@ -64,6 +64,7 @@ def get_capacity(team):
     for row in rows:
         sprint_id = row.get_property(sprint_id_prop)
         state = row.get_property(state_prop)
+        print(sprint_id, state)
         if state != "DONE":
             continue
         capacity = 0
@@ -71,5 +72,4 @@ def get_capacity(team):
             value = row.get_property(prop)
             capacity += int(value) * 2 if value else 0
         capacities[int(sprint_id)] = capacity
-    print(capacities)
     return capacities
