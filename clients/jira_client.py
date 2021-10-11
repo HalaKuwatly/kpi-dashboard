@@ -35,12 +35,14 @@ def get_all_sprints(team):
     sprint_end_date = sprint_start_date + datetime.timedelta(
         days=SPRINT_LENGTH
     )
+    print("****************** ", END_DATE)
+
     while sprint_end_date <= END_DATE:
         sprints.append(
             {
                 "id": sprint_id,
-                "start_date": sprint_start_date + datetime.timedelta(-1),
-                "end_date": sprint_end_date+ datetime.timedelta(1),
+                "start_date": sprint_start_date,
+                "end_date": sprint_end_date,
             }
         )
         sprint_id += 1
@@ -48,6 +50,7 @@ def get_all_sprints(team):
         sprint_end_date = sprint_start_date + datetime.timedelta(
             days=SPRINT_LENGTH
         )
+        print("****************** ", sprint_end_date)
         # if sprint_end_date > END_DATE:
         #     sprint_end_date = END_DATE
     return sprints
@@ -124,6 +127,7 @@ def get_cycle_time_percentage(team: str, interval=7, acceptable_cycle_time=5):
             start_date=interval[0],
             end_date=interval[1],
         )
+        print(query)
         issues = jira.search_issues(
             query,
             maxResults=200,
@@ -150,10 +154,9 @@ def get_cycle_time_percentage(team: str, interval=7, acceptable_cycle_time=5):
                                 issue_start_date.date(), issue_end_date.date()
                             )
                             cycle_times.append(time_spent)
-
         percentiles.append(
             sum([1 for t in cycle_times if t <= acceptable_cycle_time])
-            / len(cycle_times)
+            / len(cycle_times) if cycle_times else 1
         )
     print(percentiles)
     return percentiles, [s.strftime("%b %d") for _, s in date_intervals]

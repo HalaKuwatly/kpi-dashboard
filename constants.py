@@ -1,6 +1,6 @@
 import datetime
 
-END_DATE = datetime.date.today() + datetime.timedelta(1)
+END_DATE = datetime.date.today() + datetime.timedelta(3)
 
 SPRINT_LENGTH = 14
 
@@ -19,8 +19,8 @@ NOTION_VIEW = "adabccb5cde7410dad8df3140a8bf93d"
 TEAM_CONSTANTS = {
     "nlu": {
         "sprint_query": "project in ('NLU Application', 'ML') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task, Research)",
-        "sprint_start_date": datetime.date(2021, 3, 29),
-        "start_sprint_id": 54,
+        "sprint_start_date": datetime.date(2021, 7, 5),
+        "start_sprint_id": 61,
         "members": [
             "ivan",
             "buddhi",
@@ -35,15 +35,15 @@ TEAM_CONSTANTS = {
     },
     "apps": {
         "sprint_query": "project in ('NLU Application') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task)",
-        "sprint_start_date": datetime.date(2021, 3, 29),
-        "start_sprint_id": 54,
+        "sprint_start_date": datetime.date(2021, 7, 5),
+        "start_sprint_id": 61,
         "members": ["ivan", "hai", "jinay", "paul"],
         "to_do_status": ["Selected for Development"],
     },
     "research": {
         "sprint_query": "project in ('ML') AND status changed to 'Done' after '{start_date}' before '{end_date}' AND issuetype in (Story, Subtask, Bug, Task, Research)",
-        "sprint_start_date": datetime.date(2021, 3, 29),
-        "start_sprint_id": 54,
+        "sprint_start_date": datetime.date(2021, 7, 5),
+        "start_sprint_id": 61,
         "members": [
             "buddhi",
             "hala",

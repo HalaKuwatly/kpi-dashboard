@@ -1,5 +1,5 @@
 streamlit
 matplotlib
 jira==2.0.0
-git+git://github.com/HalaKuwatly/notion-py.git
+git+https://github.com/jamalex/notion-py.git@refs/pull/294/merge
 protobuf==3.17.3
